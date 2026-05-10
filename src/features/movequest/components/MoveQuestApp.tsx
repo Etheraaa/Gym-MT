@@ -20,6 +20,9 @@ type StoreItem = {
   rewardSource?: string;
 };
 
+const productDocUrl =
+  "https://fx5pjozhj8v.feishu.cn/docx/N6zbdFqTcoAjatx3fFEctGMunVh?from=from_copylink";
+
 const goalTaskPacks: Record<
   GoalKey,
   {
@@ -1260,6 +1263,14 @@ export function MoveQuestApp({
     setStage("success");
   }, [checkInPath, displayPayload, onCheckIn, payload]);
 
+  const openProductDoc = React.useCallback(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.open(productDocUrl, "_blank", "noopener,noreferrer");
+  }, []);
+
   const renderContent = () => {
     switch (stage) {
       case "onboarding-1":
@@ -1281,6 +1292,11 @@ export function MoveQuestApp({
               buttonLabel="开始体验"
               onNext={() => setStage("onboarding-2")}
             />
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <button type="button" style={secondaryButtonStyle} onClick={openProductDoc}>
+                先看产品说明文档
+              </button>
+            </div>
           </section>
         );
       case "onboarding-2":

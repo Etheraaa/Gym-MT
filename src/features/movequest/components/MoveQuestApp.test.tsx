@@ -5,6 +5,23 @@ import { MoveQuestApp } from "./MoveQuestApp";
 import { mockBootstrap } from "../mock-flow";
 
 describe("MoveQuestApp", () => {
+  it("opens the product document in a new tab from the first onboarding screen", async () => {
+    const user = userEvent.setup();
+    const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+
+    render(<MoveQuestApp initialData={mockBootstrap} />);
+
+    await user.click(screen.getByRole("button", { name: "先看产品说明文档" }));
+
+    expect(openSpy).toHaveBeenCalledWith(
+      "https://fx5pjozhj8v.feishu.cn/docx/N6zbdFqTcoAjatx3fFEctGMunVh?from=from_copylink",
+      "_blank",
+      "noopener,noreferrer",
+    );
+
+    openSpy.mockRestore();
+  });
+
   it("progresses from onboarding into the main home screen", async () => {
     const user = userEvent.setup();
 
