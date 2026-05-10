@@ -31,6 +31,20 @@ npm run dev
 - 本地数据库文件位于 `data/movequest.db`
 - 页面首次加载会请求 `/api/bootstrap`
 - 首页“立即开始”会请求 `/api/check-in`
+- 可通过环境变量 `MOVEQUEST_DB_PATH` 覆盖数据库文件路径，例如部署到 Railway 时可设置为 `/data/movequest.db`
+
+## Deploy Notes
+
+推荐使用支持持久化磁盘的部署平台，例如 Railway。
+
+部署时建议配置：
+
+```bash
+MOVEQUEST_DB_PATH=/data/movequest.db
+NODE_ENV=production
+```
+
+如果平台支持 Volume / Persistent Disk，请把它挂载到 `/data`，这样 SQLite 数据在服务重启后仍然会保留。
 
 ## Test
 

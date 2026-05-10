@@ -2,10 +2,20 @@ import Database from "better-sqlite3";
 import fs from "node:fs";
 import path from "node:path";
 
-const dataDir = path.resolve(process.cwd(), "data");
-const dbPath = path.join(dataDir, "movequest.db");
-
 let database: Database.Database | null = null;
+
+export function resolveDbFilePath(
+  env: NodeJS.ProcessEnv = process.env,
+  cwd: string = process.cwd(),
+) {
+  const configuredPath = env.MOVEQUEST_DB_PATH?.trim();
+
+  if (!configuredPath) {
+    return path.join(cwd, "data", "movequest.db");
+  }
+
+  return path.isAbsolute(configuredPath) ? configuredPath : path.resolve(cwd, configuredPath);
+}
 
 function hasColumn(db: Database.Database, tableName: string, columnName: string) {
   const columns = db.prepare(`PRAGMA table_info(${tableName})`).all() as Array<{ name: string }>;
@@ -99,6 +109,9 @@ function createSchema(db: Database.Database) {
 
 export function getDb() {
   if (!database) {
+    const dbPath = resolveDbFilePath();
+    const dataDir = path.dirname(dbPath);
+
     fs.mkdirSync(dataDir, { recursive: true });
     database = new Database(dbPath);
     database.pragma("journal_mode = WAL");
