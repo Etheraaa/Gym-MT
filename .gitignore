@@ -1,0 +1,15 @@
+node_modules/
+.next/
+
+.env
+.env.local
+.env.*.local
+
+data/
+prisma/dev.db
+prisma/dev.db-journal
+
+.DS_Store
+coverage/
+
+docx_render/

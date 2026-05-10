@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String      @id @default(cuid())
+  name          String
+  personaLabel  String
+  level         Int
+  currentXp     Int
+  nextLevelXp   Int
+  streakDays    Int
+  totalWorkouts Int
+  totalWins     Int
+  totalDistance Int
+  teamMembers   TeamMember[]
+  tasks         Task[]
+  badges        Badge[]
+  milestones    Milestone[]
+}
+
+model Team {
+  id               String       @id @default(cuid())
+  name             String
+  campusLabel      String
+  completionRate   Int
+  weeklyGoal       String
+  weeklyProgress   Float
+  members          TeamMember[]
+  challenges       Challenge[]
+}
+
+model TeamMember {
+  id        String  @id @default(cuid())
+  display   String
+  status    String
+  accent    String
+  isCurrent Boolean @default(false)
+  userId    String?
+  teamId    String
+  user      User?   @relation(fields: [userId], references: [id])
+  team      Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+}
+
+model Task {
+  id          String  @id @default(cuid())
+  title       String
+  duration    String
+  completed   Boolean @default(false)
+  displayOrder Int
+  userId      String
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Challenge {
+  id          String  @id @default(cuid())
+  title       String
+  description String
+  accent      String
+  remaining   String?
+  teamId      String?
+  team        Team?   @relation(fields: [teamId], references: [id], onDelete: SetNull)
+}
+
+model Badge {
+  id       String @id @default(cuid())
+  title    String
+  accent   String
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Milestone {
+  id       String @id @default(cuid())
+  title    String
+  status   String
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
